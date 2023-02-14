@@ -1,4 +1,4 @@
-VENV_PATH = /venv/bin/activate
+VENV_PATH = /env/bin/activate
 ENVIRONMENT_VARIABLE_FILE = .env
 
 init:
