@@ -12,7 +12,6 @@ import os
 # import os, shutil
 # import os.path
 import config
-from updates_info import *
 from db_operation import OperationDb
 from telebot.async_telebot import AsyncTeleBot
 
@@ -40,7 +39,8 @@ async def send_chat_info(message):
 
 @bot.message_handler(commands=['updates'])
 async def send_updates(message):
-    await bot.reply_to(message, info_message)
+    print(config.UPDATES_INFO)
+    await bot.reply_to(message, config.UPDATES_INFO)
 
 @bot.message_handler(commands=['movies'])
 async def send_movies(message):
@@ -60,7 +60,7 @@ async def query_handler_answer_movies(call):
 
     category_movie = call.data
 
-    myUrl = 'https://api.kinopoisk.dev/movie?field=rating.imdb&search=7-10&search=%s&field=genres.name&token=%s' % (category_movie, token_kino)
+    myUrl = 'https://api.kinopoisk.dev/movie?field=rating.imdb&search=7-10&field=year&search=2006-2022&search=%s&field=genres.name&token=%s' % (category_movie, token_kino)
     response = requests.get(myUrl)
     json_data = json.loads(response.text)
     pages = json_data["pages"]
@@ -70,7 +70,7 @@ async def query_handler_answer_movies(call):
 
     random_num_film = random.randint(0, 9)
 
-    url_search = 'https://api.kinopoisk.dev/movie?field=rating.imdb&search=7-10&search=%s&field=genres.name&page=%s&limit=10&token=%s' % (category_movie, random_num_pages, token_kino)
+    url_search = 'https://api.kinopoisk.dev/movie?field=rating.imdb&search=7-10&field=year&search=2006-2022&search=%s&field=genres.name&page=%s&limit=10&token=%s' % (category_movie, random_num_pages, token_kino)
     response_search = requests.get(url_search)
     json_data_search = json.loads(response_search.text)
     json_film_search = json_data_search['docs'][random_num_film]
