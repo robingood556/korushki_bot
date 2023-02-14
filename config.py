@@ -1,0 +1,9 @@
+MOVIES = ["комедия", "фантастика", "триллер", "детектив"]
+NAMES = ["Петя", "Макс", "Илья", "Настя", "Андрей", "Саша", "Даня" , "Женя", "Ян"]
+TANYA_TABLE = 'tanya_table'
+EMOJI_LIPTON = u'\U0001F943'
+EMOJI_CRING = u'\U0001F602'
+EMOJI_RESPECT = u'\U0001F929'
+EMOJI_COIN = u'\U0001F4B8'
+DISRESPECT_TABLE = 'kring_table'
+RESPECT_TABLE = 'krasava_table'
