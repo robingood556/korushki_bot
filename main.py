@@ -114,7 +114,10 @@ async def button_message(message):
 @bot.callback_query_handler(func=lambda call: call.data in korushki_names)
 async def query_handler_answer(call):
 
-    if call.message.chat.id == 306643703:
+    print(call.from_user.id)
+    print(call.message.chat.id)
+
+    if call.from_user.id == 306643703:
 
         await bot.edit_message_reply_markup(call.message.chat.id, call.message.id, reply_markup='')
         await bot.delete_message(call.message.chat.id, call.message.id)
@@ -139,7 +142,7 @@ async def query_handler_answer_points(call):
     await bot.edit_message_reply_markup(call.message.chat.id, call.message.id, reply_markup='')
     await bot.delete_message(call.message.chat.id, call.message.id)
 
-    if call.message.chat.id == 306643703:
+    if call.from_user.id == 306643703:
         if call.data == "1":
             ins_func_one = OperationDb(username_for_tanya, 1, config.TANYA_TABLE)
             ins_func_one.insert_krasava_points()
