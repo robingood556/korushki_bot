@@ -9,10 +9,12 @@ import json
 import random
 import os
 
+from datetime import datetime, timedelta
+
 # import os, shutil
 # import os.path
 import config
-from db_operation import OperationDb
+from db_operation import OperationDb, InsertDB
 from telebot.async_telebot import AsyncTeleBot
 
 load_dotenv()
@@ -26,11 +28,7 @@ korushki_names = config.NAMES
 # Handle '/start' and '/help'
 @bot.message_handler(commands=['help'])
 async def send_welcome(message):
-    await bot.reply_to(message, """\
-Привет, этот бот сделан для номинаций года и трекинга поинтов, на данный момент бот ведет подсчет кринжпоинтов и респектпоинтов. \
-Чтобы использовать бота, вы должны ответить на сообщение пользователя и написать кринж или респект. Выбор за вами! \
-Чтобы мотивировать создателя продолжать что-то делать - можете скинуть ему свои деньги) \
-""")
+    await bot.reply_to(message, config.HELP_INFO)
 
 @bot.message_handler(commands=['chat_info'])
 async def send_chat_info(message):
@@ -39,7 +37,6 @@ async def send_chat_info(message):
 
 @bot.message_handler(commands=['updates'])
 async def send_updates(message):
-    print(config.UPDATES_INFO)
     await bot.reply_to(message, config.UPDATES_INFO)
 
 @bot.message_handler(commands=['movies'])
@@ -177,8 +174,27 @@ async def checker(message):
         ins_func_respect = OperationDb(username, 10, config.RESPECT_TABLE)
         ins_func_respect.insert_krasava_points()
         await bot.send_message(message.chat.id, (
-                    config.EMOJI_RESPECT * 3) + "Воу! Очень хорошая работа: " + str(username) + " вам начисляется +10 респектпоинтов" + (
-                                           config.EMOJI_COIN * 10))
+                    config.EMOJI_RESPECT * 3) + "Воу! Очень хорошая работа: " + str(username) + " вам начисляется +10 респектпоинтов" + (config.EMOJI_COIN * 10))
+    elif message.text.lower() == 'фото':
+        if message.reply_to_message.photo != None:
+            date_and_time = datetime.now()
+            string_date = str(date_and_time.strftime("%Y_%m_%d_%H_%M_%S"))
+            file_name = "photo/photo_nomination_" + string_date + ".jpg"
+            file_path = await bot.get_file(message.reply_to_message.photo[-1].file_id)
+            downloaded_file = await bot.download_file(file_path.file_path)
+            with open(file_name, 'wb') as new_file:
+                new_file.write(downloaded_file)
+            await bot.send_message(message.chat.id, "Спасибо за фото!")
+        else:
+            await bot.send_message(message.chat.id, "Ты что долбаеб? Я же говорил отвечай на фото")
+    elif message.text.lower() == 'хотелка':
+        username = message.reply_to_message.from_user.username
+        text_string = message.reply_to_message.text
+        time_now = datetime.now()
+        date = str(time_now.strftime("%Y/%m/%d %H:%M:%S"))
+        ins_func_request = InsertDB(username, text_string, date, config.REQUEST_TABLE)
+        ins_func_request.insert_request_users()
+        await bot.send_message(message.chat.id, "Спасибо за ваш запрос!")
     else:
         pass
 
